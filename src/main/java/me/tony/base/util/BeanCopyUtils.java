@@ -45,6 +45,9 @@ public final class BeanCopyUtils {
     }
 
     public static <S, T> T copySilence(S source, Class<T> targetClass) {
+        if (source == null) {
+            return null;
+        }
         try {
             return copy(source, targetClass);
         } catch (IllegalAccessException | ExecutionException | InstantiationException e) {
