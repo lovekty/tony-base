@@ -7,7 +7,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by tony on 2017/3/9.
  */
-public class EnumUtils {
+public final class EnumUtils {
+
+    private EnumUtils() {
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EnumUtils.class);
 
