@@ -7,6 +7,7 @@ import net.sf.cglib.core.Converter;
 import org.apache.commons.beanutils.ConvertUtils;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -24,13 +25,14 @@ public final class BeanCopyUtils {
     private BeanCopyUtils() {
     }
 
-    public static <S, T> T copy(S source, Class<T> targetClass) throws IllegalAccessException, ExecutionException, InstantiationException {
+    public static <S, T> T copy(S source, Class<T> targetClass) throws IllegalAccessException, ExecutionException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         return copy(source, targetClass, source.getClass() != targetClass);
     }
 
-    public static <S, T> T copy(S source, Class<T> targetClass, boolean useConverter) throws IllegalAccessException, InstantiationException, ExecutionException {
+    public static <S, T> T copy(S source, Class<T> targetClass, boolean useConverter) throws IllegalAccessException, InstantiationException, ExecutionException, NoSuchMethodException, InvocationTargetException {
         BeanCopier copier = getBeanCopier(source.getClass(), targetClass, useConverter);
-        T target = targetClass.newInstance();
+        T target = //targetClass.newInstance(); in favor of java9
+        targetClass.getConstructor().newInstance();
         copier.copy(source, target, useConverter ? converter : null);
         return target;
     }
@@ -45,12 +47,9 @@ public final class BeanCopyUtils {
     }
 
     public static <S, T> T copySilence(S source, Class<T> targetClass) {
-        if (source == null) {
-            return null;
-        }
         try {
-            return copy(source, targetClass);
-        } catch (IllegalAccessException | ExecutionException | InstantiationException e) {
+            return source == null ? null : copy(source, targetClass);
+        } catch (IllegalAccessException | ExecutionException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             throw new BeanCopyException(e);
         }
     }
@@ -73,12 +72,12 @@ public final class BeanCopyUtils {
         private static final long serialVersionUID = 1359775567655222904L;
         Class<S> sourceClass;
         Class<T> targetClass;
-        boolean userConverter;
+        boolean useConverter;
 
-        Key(Class<S> sourceClass, Class<T> targetClass, boolean userConverter) {
+        Key(Class<S> sourceClass, Class<T> targetClass, boolean useConverter) {
             this.sourceClass = sourceClass;
             this.targetClass = targetClass;
-            this.userConverter = userConverter;
+            this.useConverter = useConverter;
         }
 
         @Override
@@ -86,14 +85,14 @@ public final class BeanCopyUtils {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Key<?, ?> key = (Key<?, ?>) o;
-            return userConverter == key.userConverter &&
+            return useConverter == key.useConverter &&
                     Objects.equals(sourceClass, key.sourceClass) &&
                     Objects.equals(targetClass, key.targetClass);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(sourceClass, targetClass, userConverter);
+            return Objects.hash(sourceClass, targetClass, useConverter);
         }
     }
 
