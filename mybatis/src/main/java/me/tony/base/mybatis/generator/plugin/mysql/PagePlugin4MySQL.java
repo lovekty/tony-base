@@ -1,4 +1,4 @@
-package me.tony.base.orm.mybatis.generator.plugin.mysql;
+package me.tony.base.mybatis.generator.plugin.mysql;
 
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;

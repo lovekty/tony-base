@@ -1,4 +1,4 @@
-package me.tony.base.util;
+package me.tony.base.common.util;
 
 import java.util.List;
 import java.util.Objects;

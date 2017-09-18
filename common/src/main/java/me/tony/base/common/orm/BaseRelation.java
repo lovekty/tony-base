@@ -1,4 +1,4 @@
-package me.tony.base.orm;
+package me.tony.base.common.orm;
 
 import java.io.Serializable;
 import java.util.Date;
