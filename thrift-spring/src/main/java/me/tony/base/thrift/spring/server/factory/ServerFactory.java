@@ -5,7 +5,7 @@ import org.apache.thrift.server.TServer;
 
 public interface ServerFactory<T extends TServer> {
 
-    T buildServer(ServerConfig config);
+    T buildServer(ServerConfig config, Object provider);
 
     ServerConfig.ServerType supportedServerType();
 }
