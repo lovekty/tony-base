@@ -9,7 +9,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class TThreadPoolServerFactory extends AbstractServerFactory {
-    @Override
+//    @Override
     protected TServer buildServer(Class<? extends TServer> serverClass, ServerConfig config) {
         try {
             Constructor<? extends TServerTransport> transportConstructor = config.getServerType().getTransportClass().getDeclaredConstructor();

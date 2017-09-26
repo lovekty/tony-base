@@ -49,17 +49,21 @@ public class ServerConfig implements Serializable {
     }
 
     public enum ServerType {
-        SIMPLE(1, TSimpleServer.class, TServerSocket.class),
-        NONBLOCKING(2, TNonblockingServer.class, TNonblockingServerSocket.class),
-        HSHA(3, THsHaServer.class, TNonblockingServerSocket.class),
-        SELECTOR(4, TThreadedSelectorServer.class, TNonblockingServerSocket.class),
-        POOL(5, TThreadPoolServer.class, TServerSocket.class);
+        SIMPLE(1, TSimpleServer.class, TServer.Args.class, TServerSocket.class),
+        NONBLOCKING(2, TNonblockingServer.class, TNonblockingServer.Args.class, TNonblockingServerSocket.class),
+        HSHA(3, THsHaServer.class, THsHaServer.Args.class, TNonblockingServerSocket.class),
+        SELECTOR(4, TThreadedSelectorServer.class, TThreadedSelectorServer.Args.class, TNonblockingServerSocket.class),
+        POOL(5, TThreadPoolServer.class, TThreadPoolServer.Args.class, TServerSocket.class);
 
         private int id;
         private Class<? extends TServer> serverClass;
+        private Class<? extends TServer.AbstractServerArgs> argsClass;
         private Class<? extends TServerTransport> transportClass;
 
-        ServerType(int id, Class<? extends TServer> serverClass, Class<? extends TServerTransport> transportClass) {
+        ServerType(int id,
+                   Class<? extends TServer> serverClass,
+                   Class<? extends TServer.AbstractServerArgs> argsClass,
+                   Class<? extends TServerTransport> transportClass) {
             this.id = id;
             this.serverClass = serverClass;
             this.transportClass = transportClass;
@@ -71,6 +75,10 @@ public class ServerConfig implements Serializable {
 
         public Class<? extends TServer> getServerClass() {
             return serverClass;
+        }
+
+        public Class<? extends TServer.AbstractServerArgs> getArgsClass() {
+            return argsClass;
         }
 
         public Class<? extends TServerTransport> getTransportClass() {
