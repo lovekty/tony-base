@@ -8,8 +8,8 @@ import org.apache.thrift.protocol.TProtocolFactory;
 import java.io.Serializable;
 
 public class ProtocolConfig implements Serializable {
+    public static final String FACTORY_TAG = "$Factory";
     private static final long serialVersionUID = 1856444080370420789L;
-
     private ProtocolType protocolType;
 
     public ProtocolType getProtocolType() {
@@ -34,6 +34,18 @@ public class ProtocolConfig implements Serializable {
             this.id = id;
             this.protocolClass = protocolClass;
             this.factoryClass = factoryClass;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public Class<? extends TProtocol> getProtocolClass() {
+            return protocolClass;
+        }
+
+        public Class<? extends TProtocolFactory> getFactoryClass() {
+            return factoryClass;
         }
     }
 

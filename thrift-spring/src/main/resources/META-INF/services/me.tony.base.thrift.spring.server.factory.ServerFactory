@@ -1,0 +1,5 @@
+me.tony.base.thrift.spring.server.factory.TThreadPoolServerFactory
+me.tony.base.thrift.spring.server.factory.THsHaServerFactory
+me.tony.base.thrift.spring.server.factory.TNonblockingServerFactory
+me.tony.base.thrift.spring.server.factory.TSimpleServerFactory
+me.tony.base.thrift.spring.server.factory.TThreadedSelectorServerFactory

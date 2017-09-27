@@ -9,8 +9,10 @@ import org.apache.thrift.transport.TServerTransport;
 import java.io.Serializable;
 
 public class ServerConfig implements Serializable {
+    public static final String IFACE_TAG = "$Iface";
+    public static final String PROCESSOR_TAG = "$Processor";
+    public static final int IFACE_TAG_SIZE = IFACE_TAG.length();
     private static final long serialVersionUID = 1828354083980650299L;
-
     private int port;
     private int timeout;
     private ServerType serverType;
@@ -66,6 +68,7 @@ public class ServerConfig implements Serializable {
                    Class<? extends TServerTransport> transportClass) {
             this.id = id;
             this.serverClass = serverClass;
+            this.argsClass = argsClass;
             this.transportClass = transportClass;
         }
 
