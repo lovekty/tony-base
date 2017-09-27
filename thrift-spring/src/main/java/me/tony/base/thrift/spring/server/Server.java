@@ -38,7 +38,7 @@ public final class Server {
     private Class<? extends TProcessor> getProcessorType(Class<?> serviceType) {
         String processorTypeName = serviceType.getName() + PROCESSOR_TAG;
         try {
-            Class<?> clazz = Class.forName(processorTypeName);
+            Class<?> clazz = Server.class.getClassLoader().loadClass(processorTypeName);
             if (TProcessor.class.isAssignableFrom(clazz)) {
                 return (Class<? extends TProcessor>) clazz;
             }
@@ -66,7 +66,7 @@ public final class Server {
         }
         String serviceTypeName = ifaceTypeName.substring(0, ifaceTypeName.length() - IFACE_TAG_SIZE);
         try {
-            return Class.forName(serviceTypeName);
+            return Server.class.getClassLoader().loadClass(serviceTypeName);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("cannot find base service of type " + serviceTypeName, e);
         }
