@@ -15,7 +15,7 @@ public abstract class AbstractServerFactory implements ServerFactory {
     public final TServer buildServer(ServerConfig config, Class<? extends TProcessor> processorType, Class<?> ifaceType, Object provider) {
         Objects.requireNonNull(config, "config cannot be null!");
         Objects.requireNonNull(provider, "provider connot be null!");
-        checkServerType(config);
+//        checkServerType(config);
         TServerTransport transport = createTransport(config);
         TProcessor processor = createProcessor(processorType, ifaceType, provider);
         TServer.AbstractServerArgs args = createArgs(config, transport);
@@ -23,6 +23,11 @@ public abstract class AbstractServerFactory implements ServerFactory {
         return createServer(config, args);
     }
 
+    /**
+     * @param config
+     * @deprecated 使用spi机制使得使用本基类的Factory创建Server完全自动化，不需要check类型匹配
+     */
+    @Deprecated
     private void checkServerType(ServerConfig config) {
         if (config.getServerType() != supportedServerType()) {
             throw new IllegalArgumentException(config.getServerType() + " not fit for " + supportedServerType());
@@ -52,10 +57,21 @@ public abstract class AbstractServerFactory implements ServerFactory {
         try {
             TServer.AbstractServerArgs args = BeanUtils.instantiateClass(argsClass.getConstructor(TServerTransport.class), transport);
             args.protocolFactory(createProtocalFactory(config.getProtocol().getProtocolType().getFactoryClass()));
+            fillConfig(args, config);
             return args;
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("class " + argsClass.getClass().getName() + " is not a thrift iface provider");
         }
+    }
+
+    /**
+     * 针对不同类型的Args填充config中的不同参数，有需要可以在ServerConfig中添加，或者在一个自定义的子类中添加
+     *
+     * @param args
+     * @param config
+     */
+    protected void fillConfig(TServer.AbstractServerArgs args, ServerConfig config) {
+
     }
 
     private TProtocolFactory createProtocalFactory(Class<? extends TProtocolFactory> factoryType) {
@@ -66,7 +82,7 @@ public abstract class AbstractServerFactory implements ServerFactory {
         }
     }
 
-    protected TServerTransport createTransport(ServerConfig config) {
+    private TServerTransport createTransport(ServerConfig config) {
         Class<? extends TServerTransport> transportClass = config.getServerType().getTransportClass();
         try {
             return BeanUtils.instantiateClass(transportClass.getConstructor(Integer.TYPE, Integer.TYPE),
@@ -75,7 +91,5 @@ public abstract class AbstractServerFactory implements ServerFactory {
             throw new IllegalArgumentException("cannot find target constructor for " + transportClass.getName(), e);
         }
     }
-
-//    protected abstract TServer buildServer(Class<? extends TServer> serverClass, ServerConfig config);
 
 }
